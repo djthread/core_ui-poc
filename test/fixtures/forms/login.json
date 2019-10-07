@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": [
+    "username",
+    "password"
+  ],
+  "properties": {
+    "password": { "type": "string" },
+    "username": { "type": "string" },
+    "awesomenes_level": {"type": "integer", "minimum": 0, "maximum": 10 }
+  }
+}
