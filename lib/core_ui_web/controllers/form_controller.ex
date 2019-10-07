@@ -1,6 +1,7 @@
 defmodule CoreUIWeb.FormController do
   use CoreUIWeb, :controller
   import Phoenix.LiveView.Controller
+  alias CoreUI.Spec
 
   action_fallback(CoreUIWeb.FallbackController)
 
@@ -16,7 +17,7 @@ defmodule CoreUIWeb.FormController do
 
   defp launch({:ok, json}, conn) do
     live_render(conn, CoreUIWeb.FormLive, session: %{
-      form_json: json
+      spec: Spec.from_json_schema(json)
     })
   end
 

@@ -6,8 +6,7 @@ defmodule CoreUIWeb.FormLive do
     FormView.render("index.html", assigns)
   end
 
-  def mount(%{form_json: form_json}, socket) do
-    IO.inspect(form_json)
+  def mount(%{spec: spec}, socket) do
     {:ok, socket}
   end
 end
