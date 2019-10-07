@@ -17,7 +17,7 @@ defmodule CoreUIWeb.Router do
   scope "/", CoreUIWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    get "/:form", FormController, :index
   end
 
   # Other scopes may use custom stacks.
