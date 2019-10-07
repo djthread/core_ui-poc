@@ -14,7 +14,8 @@ config :core_ui,
 # Configures the endpoint
 config :core_ui, CoreUIWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "IsAQLkEsBifGvEpkADUcUk9x35qgq0EsXBJ2CfiNUV2jl92gR7JT68CO/6ia7h6S",
+  secret_key_base:
+    "IsAQLkEsBifGvEpkADUcUk9x35qgq0EsXBJ2CfiNUV2jl92gR7JT68CO/6ia7h6S",
   render_errors: [view: CoreUIWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: CoreUI.PubSub, adapter: Phoenix.PubSub.PG2],
   live_view: [
