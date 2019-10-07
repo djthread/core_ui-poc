@@ -26,21 +26,26 @@ defmodule CoreUI.Spec do
     end
   end
 
+  @spec from_json_schema(map()) :: {:ok, t} | {:error, String.t()}
   def from_json_schema(
         %{"type" => "object", "properties" => properties} = schema
       ) do
-    required = Map.get(schema, "required", [])
+    spec = %__MODULE__{required: Map.get(schema, "required", [])}
 
-    Enum.reduce(properties, %__MODULE__{}, fn {key, prop}, acc ->
-      build_prop(acc, key in required, key, prop)
+    Enum.reduce_while(properties, {:ok, spec}, fn {key, prop}, {:ok, acc} ->
+      case add_prop(acc, key, prop) do
+        %{} = sp -> {:cont, {:ok, sp}}
+        {:error, err} -> {:halt, {:error, err}}
+      end
     end)
   end
 
   def from_json_schema(schema) do
-    raise "Unrecognized JSON Schema: #{inspect(schema)}"
+    {:error, "Unrecognized JSON Schema: #{inspect(schema)}"}
   end
 
-  defp build_prop(spec, required?, key, %{"type" => type} = prop)
+  @spec add_prop(t, String.t(), map()) :: {:ok, t} | {:error, String.t()}
+  defp add_prop(spec, key, %{"type" => type} = prop)
        when type in @valid_types do
     mod =
       "#{__MODULE__}.#{String.capitalize(type)}Property"
@@ -48,15 +53,9 @@ defmodule CoreUI.Spec do
 
     if function_exported?(mod, :build_property, 1) do
       property = apply(mod, :build_property, [prop])
-      required = if required?, do: [key], else: []
-
-      %{
-        spec
-        | required: required ++ spec.required,
-          properties: Map.put(spec.properties, key, property)
-      }
+      %{spec | properties: Map.put(spec.properties, key, property)}
     else
-      raise "Unrecognized type: #{type}"
+      {:error, "Unrecognized type: #{type}"}
     end
   end
 end

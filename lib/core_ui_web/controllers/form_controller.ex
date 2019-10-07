@@ -9,19 +9,21 @@ defmodule CoreUIWeb.FormController do
     with {:ok, json} <-
            ~w(#{File.cwd!()} test fixtures forms #{form}.json)
            |> Path.join()
-           |> File.read() do
-      Jason.decode(json)
+           |> File.read(),
+         {:ok, json} <- Jason.decode(json),
+         {:ok, spec} <- Spec.from_json_schema(json) do
+      launch(conn, spec)
+    else
+      bad ->
+        {:error, :not_found}
     end
-    |> launch(conn)
   end
 
-  defp launch({:ok, json}, conn) do
-    live_render(conn, CoreUIWeb.FormLive, session: %{
-      spec: Spec.from_json_schema(json)
-    })
-  end
-
-  defp launch(_, _) do
-    {:error, :not_found}
+  defp launch(conn, spec) do
+    live_render(conn, CoreUIWeb.FormLive,
+      session: %{
+        spec: spec
+      }
+    )
   end
 end
