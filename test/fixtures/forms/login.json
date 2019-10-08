@@ -6,12 +6,13 @@
       "password"
     ],
     "properties": {
-      "password": { "type": "string" },
-      "username": { "type": "string" },
+      "password": {"type": "string"},
+      "username": {"type": "string"},
       "awesomeness_level": {"type": "integer", "minimum": 1, "maximum": 10}
     }
   },
   "ui": {
+    "order": ["username", "password"],
     "labels": {
       "awesomeness_level": "Awesomeness Level (1-10)"
     }

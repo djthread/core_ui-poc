@@ -2,6 +2,7 @@ defmodule CoreUIWeb.FormController do
   use CoreUIWeb, :controller
   import Phoenix.LiveView.Controller
   alias CoreUI.Spec
+  require Logger
 
   action_fallback(CoreUIWeb.FallbackController)
 
@@ -15,6 +16,7 @@ defmodule CoreUIWeb.FormController do
       launch(conn, spec)
     else
       bad ->
+        Logger.error(inspect(bad))
         {:error, :not_found}
     end
   end

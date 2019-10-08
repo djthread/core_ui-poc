@@ -7,15 +7,15 @@
   required: ["username", "password"]
 } %>
 <% opts = [as: "form", phx_change: :validate, phx_submit: :save] %>
-<%= form_for @changeset, "#", opts, fn f -> %>
+<%= f = form_for @changeset, "#", opts %>
   <%= for {key, prop} <- @spec.properties do %>
-    <%= label f, key, display_name(key) %>
+    <%= label f, key, display_name(@spec, key) %>
     <%= build_input f, key, prop %>
     <%= error_tag f, key %>
   <% end %>
 
   <%= submit "Save", phx_disable_with: "Saving..." %>
-<% end %>
+</form>
 
 <%= case assigns[:status] do %>
   <% {:ok, data} -> %>

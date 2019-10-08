@@ -1,4 +1,5 @@
 defmodule CoreUIWeb.FormLive do
+  @moduledoc false
   use Phoenix.LiveView
   alias CoreUI.Spec
   alias CoreUIWeb.FormView
@@ -18,13 +19,14 @@ defmodule CoreUIWeb.FormLive do
     changeset =
       socket.assigns.spec
       |> Spec.changeset(%{}, params)
-      |> Map.put(:action, :update)
-      |> IO.inspect()
+      |> Map.put(:action, :insert)
 
     {:noreply, assign(socket, changeset: changeset)}
   end
 
   def handle_event("save", %{"form" => params}, socket) do
+    :timer.sleep(1_000)
+
     status =
       case Spec.changeset(socket.assigns.spec, %{}, params) do
         %{valid?: true} = cs ->

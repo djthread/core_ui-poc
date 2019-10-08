@@ -1,44 +1,15 @@
 defmodule CoreUI.Spec do
   @moduledoc """
-  Handle our internal `spec` data structure for rendering and validating
-  forms
+  Handle our internal `spec` data structure for
+  rendering and validating forms
   """
+  alias Ecto.Changeset
 
   @type t :: %__MODULE__{}
 
   @valid_types ~w(string integer)
 
   defstruct required: [], properties: %{}
-
-  defmodule StringProperty do
-    @moduledoc "A string property"
-    defstruct []
-
-    def ecto_type, do: :string
-
-    def build_property(_), do: %__MODULE__{}
-
-    def build_input(form, key, prop) do
-      alias Phoenix.HTML.Form
-      Form.text_input(form, key)
-    end
-  end
-
-  defmodule IntegerProperty do
-    @moduledoc "An integer property"
-    defstruct minimum: nil, maximum: nil
-
-    def ecto_type, do: :integer
-
-    def build_property(prop) do
-      %__MODULE__{minimum: prop["minimum"], maximum: prop["maximum"]}
-    end
-
-    def build_input(form, key, prop) do
-      alias Phoenix.HTML.Form
-      Form.text_input(form, key)
-    end
-  end
 
   @spec from_json_schema(map()) :: {:ok, t} | {:error, String.t()}
   def from_json_schema(%{
@@ -61,12 +32,14 @@ defmodule CoreUI.Spec do
   end
 
   def changeset(spec, initial, attrs) do
-    import Ecto.Changeset
+    cs =
+      {initial, build_ecto_types(spec)}
+      |> Changeset.cast(attrs, Map.keys(spec.properties))
+      |> Changeset.validate_required(spec.required)
 
-    {initial, build_ecto_types(spec)}
-    |> cast(attrs, Map.keys(spec.properties))
-    |> validate_required(spec.required)
-    # |> unique_constraint(:name)
+    Enum.reduce(spec.properties, cs, fn {key, prop}, acc ->
+      prop.__struct__.build_validation(acc, key, prop)
+    end)
   end
 
   defp build_ecto_types(%{properties: properties}) do

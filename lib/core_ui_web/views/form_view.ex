@@ -1,7 +1,7 @@
 defmodule CoreUIWeb.FormView do
   use CoreUIWeb, :view
 
-  def display_name(str) do
+  def display_name(_spec, str) do
     str
     |> to_string()
     |> String.split("_")
