@@ -15,7 +15,12 @@ defmodule CoreUI.Spec do
     defstruct []
 
     def ecto_type, do: :string
+
     def build_property(_), do: %__MODULE__{}
+
+    def build_input(form, key, prop) do
+      Phoenix.HTML.Form.text_input(form, key)
+    end
   end
 
   defmodule IntegerProperty do
@@ -26,6 +31,10 @@ defmodule CoreUI.Spec do
 
     def build_property(prop) do
       %__MODULE__{minimum: prop["minimum"], maximum: prop["maximum"]}
+    end
+
+    def build_input(form, key, prop) do
+      Phoenix.HTML.Form.text_input(form, key)
     end
   end
 
@@ -52,6 +61,7 @@ defmodule CoreUI.Spec do
 
     {initial, build_ecto_types(spec)}
     |> cast(attrs, Map.keys(spec.properties))
+
     # |> validate_required([:name])
     # |> unique_constraint(:name)
   end
