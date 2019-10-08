@@ -4,8 +4,15 @@ defmodule CoreUI.Spec do
   rendering and validating forms
   """
   alias Ecto.Changeset
+  alias Phoenix.{HTML, HTML.Form}
 
   @type t :: %__MODULE__{}
+  @type key :: atom()
+
+  @callback ecto_type :: atom()
+  @callback build_property(map()) :: %{__struct__: module}
+  @callback build_input(Form.t(), key, map()) :: HTML.safe()
+  @callback build_validation(Changeset.t(), key, map()) :: Changeset.t()
 
   @valid_types ~w(string integer)
 

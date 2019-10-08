@@ -2,6 +2,8 @@ defmodule CoreUI.Spec.StringProperty do
   @moduledoc "A string property"
   alias Phoenix.HTML.Form
 
+  @behaviour CoreUI.Spec
+
   defstruct []
 
   def ecto_type, do: :string

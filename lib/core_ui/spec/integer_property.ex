@@ -3,6 +3,8 @@ defmodule CoreUI.Spec.IntegerProperty do
   alias Ecto.Changeset
   alias Phoenix.HTML.Form
 
+  @behaviour CoreUI.Spec
+
   defstruct minimum: nil, maximum: nil
 
   def ecto_type, do: :integer
