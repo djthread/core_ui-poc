@@ -28,7 +28,7 @@ defmodule CoreUI.Spec do
 
     Enum.reduce_while(properties, {:ok, spec}, fn {key, prop}, {:ok, acc} ->
       case add_prop(acc, key, prop) do
-        %{} = sp -> {:cont, {:ok, sp}}
+        {:ok, sp} -> {:cont, {:ok, sp}}
         {:error, err} -> {:halt, {:error, err}}
       end
     end)
@@ -65,7 +65,7 @@ defmodule CoreUI.Spec do
     if function_exported?(mod, :build_property, 1) do
       property = apply(mod, :build_property, [prop])
       properties = Map.put(spec.properties, String.to_atom(key), property)
-      %{spec | properties: properties}
+      {:ok, %{spec | properties: properties}}
     else
       {:error, "Unrecognized type: #{type}"}
     end
