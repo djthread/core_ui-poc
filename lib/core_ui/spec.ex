@@ -14,12 +14,15 @@ defmodule CoreUI.Spec do
     @moduledoc "A string property"
     defstruct []
 
+    def ecto_type, do: :string
     def build_property(_), do: %__MODULE__{}
   end
 
   defmodule IntegerProperty do
     @moduledoc "An integer property"
     defstruct minimum: nil, maximum: nil
+
+    def ecto_type, do: :integer
 
     def build_property(prop) do
       %__MODULE__{minimum: prop["minimum"], maximum: prop["maximum"]}
@@ -44,6 +47,21 @@ defmodule CoreUI.Spec do
     {:error, "Unrecognized JSON Schema: #{inspect(schema)}"}
   end
 
+  def changeset(spec, initial, attrs) do
+    import Ecto.Changeset
+
+    {initial, build_ecto_types(spec)}
+    |> cast(attrs, Map.keys(spec.properties))
+    # |> validate_required([:name])
+    # |> unique_constraint(:name)
+  end
+
+  defp build_ecto_types(%{properties: properties}) do
+    Map.new(properties, fn {key, property} ->
+      {key, property.__struct__.ecto_type()}
+    end)
+  end
+
   @spec add_prop(t, String.t(), map()) :: {:ok, t} | {:error, String.t()}
   defp add_prop(spec, key, %{"type" => type} = prop)
        when type in @valid_types do
@@ -53,7 +71,8 @@ defmodule CoreUI.Spec do
 
     if function_exported?(mod, :build_property, 1) do
       property = apply(mod, :build_property, [prop])
-      %{spec | properties: Map.put(spec.properties, key, property)}
+      properties = Map.put(spec.properties, String.to_atom(key), property)
+      %{spec | properties: properties}
     else
       {:error, "Unrecognized type: #{type}"}
     end

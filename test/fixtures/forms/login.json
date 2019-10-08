@@ -7,6 +7,6 @@
   "properties": {
     "password": { "type": "string" },
     "username": { "type": "string" },
-    "awesomenes_level": {"type": "integer", "minimum": 0, "maximum": 10 }
+    "awesomeness_level": {"type": "integer", "minimum": 0, "maximum": 10 }
   }
 }

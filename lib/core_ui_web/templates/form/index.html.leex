@@ -1,3 +1,19 @@
+<%# %CoreUI.Spec{
+  properties: %{
+    "awesomeness_level" => %CoreUI.Spec.IntegerProperty{maximum: 10, minimum: 0},
+    "password" => %CoreUI.Spec.StringProperty{},
+    "username" => %CoreUI.Spec.StringProperty{}
+  },
+  required: ["username", "password"]
+} %>
+<%= form_for @changeset, "#", [as: "form", phx_submit: "save"], fn f -> %>
+  <%= for {key, prop} <- @spec.properties do %>
+    <%= label f, key do %>
+      <%= text_input f, key %>
+    <% end %>
+  <% end %>
+<% end %>
+hi
 <section class="phx-hero">
   <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
   <p>A productive web framework that<br/>does not compromise speed or maintainability.</p>
