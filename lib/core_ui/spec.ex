@@ -19,7 +19,8 @@ defmodule CoreUI.Spec do
     def build_property(_), do: %__MODULE__{}
 
     def build_input(form, key, prop) do
-      Phoenix.HTML.Form.text_input(form, key)
+      alias Phoenix.HTML.Form
+      Form.text_input(form, key)
     end
   end
 
@@ -34,15 +35,18 @@ defmodule CoreUI.Spec do
     end
 
     def build_input(form, key, prop) do
-      Phoenix.HTML.Form.text_input(form, key)
+      alias Phoenix.HTML.Form
+      Form.text_input(form, key)
     end
   end
 
   @spec from_json_schema(map()) :: {:ok, t} | {:error, String.t()}
-  def from_json_schema(
-        %{"type" => "object", "properties" => properties} = schema
-      ) do
-    spec = %__MODULE__{required: Map.get(schema, "required", [])}
+  def from_json_schema(%{
+        "schema" => %{"type" => "object", "properties" => properties} = schema
+      }) do
+    spec = %__MODULE__{
+      required: schema |> Map.get("required", []) |> Enum.map(&String.to_atom/1)
+    }
 
     Enum.reduce_while(properties, {:ok, spec}, fn {key, prop}, {:ok, acc} ->
       case add_prop(acc, key, prop) do
@@ -61,8 +65,7 @@ defmodule CoreUI.Spec do
 
     {initial, build_ecto_types(spec)}
     |> cast(attrs, Map.keys(spec.properties))
-
-    # |> validate_required([:name])
+    |> validate_required(spec.required)
     # |> unique_constraint(:name)
   end
 

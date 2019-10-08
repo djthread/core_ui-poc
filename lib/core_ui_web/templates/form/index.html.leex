@@ -6,12 +6,24 @@
   },
   required: ["username", "password"]
 } %>
-<%= form_for @changeset, "#", [as: "form", phx_submit: "save"], fn f -> %>
+<% opts = [as: "form", phx_change: :validate, phx_submit: :save] %>
+<%= form_for @changeset, "#", opts, fn f -> %>
   <%= for {key, prop} <- @spec.properties do %>
     <%= label f, key, display_name(key) %>
     <%= build_input f, key, prop %>
     <%= error_tag f, key %>
   <% end %>
 
-  <%= submit "Submit" %>
+  <%= submit "Save", phx_disable_with: "Saving..." %>
+<% end %>
+
+<%= case assigns[:status] do %>
+  <% {:ok, data} -> %>
+    <p style="font-weight:bold;color:green">Success</p>
+    <pre style="padding:2em"><%= inspect(data) %></pre>
+
+  <% :error -> %>
+    <p style="font-weight:bold;color:red">Sad face</p>
+
+  <% nil -> %>
 <% end %>

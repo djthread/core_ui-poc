@@ -10,6 +10,6 @@ defmodule CoreUIWeb.FormView do
   end
 
   def build_input(form, key, prop) do
-    prop.__struct__ build_input(form, key, prop)
+    prop.__struct__.build_input(form, key, prop)
   end
 end
