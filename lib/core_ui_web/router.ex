@@ -17,6 +17,7 @@ defmodule CoreUIWeb.Router do
   scope "/", CoreUIWeb do
     pipe_through(:browser)
 
+    get("/", FormController, :redirect_to_login)
     get("/:form", FormController, :index)
   end
 

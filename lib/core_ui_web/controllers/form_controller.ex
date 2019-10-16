@@ -6,6 +6,10 @@ defmodule CoreUIWeb.FormController do
 
   action_fallback(CoreUIWeb.FallbackController)
 
+  def redirect_to_login(conn, _) do
+    redirect(conn, to: "/login")
+  end
+
   def index(conn, %{"form" => form}) do
     with {:ok, json} <-
            ~w(#{File.cwd!()} test fixtures forms #{form}.json)
