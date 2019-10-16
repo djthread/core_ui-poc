@@ -6,7 +6,7 @@ To start your Phoenix server:
   * Install Node.js dependencies with `npm --prefix assets install`
   * Start Phoenix endpoint with `mix phx.server`
 
-Now you can visit [`localhost:4400`](http://localhost:4400) from your browser.
+Now you can visit [`localhost:4400/login`](http://localhost:4400/login) from your browser.
 
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
